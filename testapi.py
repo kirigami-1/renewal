@@ -98,16 +98,21 @@ def testapi(path,a,ls):
     }
     print('账号 '+str(a)+'\n第 '+str(ls)+' 轮运行开始时间为 :', localtime)
     if config_list['是否开启随机api顺序'] == 'Y':
-        print('总api数13个，请自行确认个数')
-        for ra in range(14):
+        napis = len(randomapi)
+        print(f'总 api 数 {napis} 个，请自行确认个数')
+        for ra in range(napis):
             rana = str(randomapi[ra])
+            ret_c = req.get(rapi[rana],headers=headers)
             try:
-                if req.get(rapi[rana],headers=headers).status_code == 200:
+                if ret_c.status_code == 200:
                     num1[a]+=1
                     print("账号"+str(a)+"的"+rana+"号api调用成功,所有api总成功"+str(num1[a])+'次')
                     if config_list['是否开启各api延时'] != 'N':
                         gg = random.randint(config_list['api延时范围开始'],config_list['api延时结束'])
                         time.sleep(gg)
+                else:
+                    print(rapi[rana], end="")
+                    print(ret_c)
             except:
                 print("pass")
                 pass
